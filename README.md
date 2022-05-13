@@ -1,1 +1,2 @@
-# CM_gh_actions
+# Automate Terraform with GitHub Actions
+
