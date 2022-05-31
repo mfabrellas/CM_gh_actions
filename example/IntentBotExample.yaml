@@ -1,0 +1,186 @@
+inboundCall:
+  name: IntentBotExample
+  division: "{{division}}"
+  startUpRef: "/inboundCall/tasks/task[New Task 1_10]"
+  defaultLanguage: "{{default_language}}"
+  supportedLanguages:
+    es-us:
+      defaultLanguageSkill:
+        noValue: true
+      textToSpeech:
+        Genesys Enhanced TTS:
+          voice: es-US-Wavenet-A
+  initialGreeting:
+    exp: ToAudioBlank(0)
+  variables:
+    - stringVariable:
+        name: Flow.bot_intent
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.exit_code
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.exit_description
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.intent_category
+        initialValue:
+          noValue: true
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        noValue: true
+    callBridge:
+      processingPrompt:
+        noValue: true
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsErrorHandling:
+    errorHandling:
+      disconnect:
+        none: true
+    preHandlingAudio:
+      tts: Se produjo un error. Intente llamar de nuevo.
+  settingsMenu:
+    extensionDialingMaxDelay:
+      lit:
+        seconds: 1
+    listenForExtensionDialing:
+      lit: true
+    menuSelectionTimeout:
+      lit:
+        seconds: 10
+    repeatCount:
+      lit: 3
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  settingsSpeechRec:
+    completeMatchTimeout:
+      lit:
+        ms: 100
+    incompleteMatchTimeout:
+      lit:
+        ms: 1500
+    maxSpeechLengthTimeout:
+      lit:
+        seconds: 20
+    minConfidenceLevel:
+      lit: 50
+    asrCompanyDir: none
+    asrEnabledOnFlow: true
+  tasks:
+    - task:
+        name: New Task 1
+        refId: New Task 1_10
+        actions:
+          - playAudio:
+              name: Welcome Audio
+              audio:
+                exp: Append(ToAudioTTS("Hola, bienvenido al menú para clientes del B B UVE A"), ToAudioBlank(500))
+          - callBotFlow:
+              name: Call Bot Flow
+              inputText:
+                noValue: true
+              exitReason:
+                noValue: true
+              intent:
+                noValue: true
+              botFlow:
+                "{{common_module_name}}":
+                  ver_latestPublished:
+                    outputs:
+                      Flow.bot_intent:
+                        var: Flow.bot_intent
+                      Flow.intent_category:
+                        var: Flow.intent_category
+                      Flow.exit_code:
+                        var: Flow.exit_code
+                      Flow.exit_description:
+                        var: Flow.exit_description
+          - switch:
+              name: Intent Identified?
+              evaluate:
+                firstTrue:
+                  default:
+                    actions:
+                      - playAudio:
+                          name: No Intent detected
+                          audio:
+                            tts: Lo sentimos, no hemos identificado el motivo de su consulta.
+                  cases:
+                    - case:
+                        value:
+                          exp: If(Flow.exit_code == "200", true, false)
+                        actions:
+                          - playAudio:
+                              name: Audio Intent Result
+                              audio:
+                                exp: Append(ToAudioBlank(500), ToAudioTTS("Hemos identificado que te gustaría realizar una consulta relacionada con,"), If(Flow.bot_intent == "1",    ToAudioTTS(" Transferencias"), If(Flow.bot_intent == "2",    ToAudioTTS(" El Pago de Facturas y Domiciliaciones"), If(Flow.bot_intent == "3",    ToAudioTTS(" Saldos y movimientos"), If(Flow.bot_intent == "4",    ToAudioTTS(" Contrataciones y Cancelaciones de cuentas"), If(Flow.bot_intent == "5",    ToAudioTTS(" Cuentas"), If(Flow.bot_intent == "6",    ToAudioTTS(" Bloqueo y Desbloqueo de trajetas"), If(Flow.bot_intent == "7",    ToAudioTTS(" Contrataciones y cancelaciones de tarjetas"), If(Flow.bot_intent == "8",    ToAudioTTS(" Tarjetas"), If(Flow.bot_intent == "9",    ToAudioTTS(" La amortización anticipada de préstamos e hipotecas"), If(Flow.bot_intent == "10",    ToAudioTTS(" La contratación de préstamos e hipotecas"), If(Flow.bot_intent == "11",    ToAudioTTS(" Préstamos e hipotecas"), If(Flow.bot_intent == "12",    ToAudioTTS(" Siniestros"), If(Flow.bot_intent == "13",    ToAudioTTS(" Contrataciones y cancelaciones de seguros"), If(Flow.bot_intent == "14",    ToAudioTTS(" Seguros"), If(Flow.bot_intent == "15",    ToAudioTTS(" Reclamos"), If(Flow.bot_intent == "16",    ToAudioTTS(" Claves"), If(Flow.bot_intent == "17",    ToAudioTTS(" Consultas de oficina"), If(Flow.bot_intent == "18",    ToAudioTTS(" Datos personales"), If(Flow.bot_intent == "19",    ToAudioTTS(" Información de ahorros e inversión"), ToAudioTTS("")))))))))))))))))))))
+          - setParticipantData:
+              name: Set Participant Data
+              attributes:
+                - attribute:
+                    name:
+                      lit: bot_intent_code
+                    value:
+                      exp: Flow.bot_intent
+                - attribute:
+                    name:
+                      lit: bot_intent
+                    value:
+                      exp: "If(Flow.bot_intent == \"1\",              \"Cuentas - Transferencias\",\n If(Flow.bot_intent == \"2\",              \"Cuentas - Pago de Facturas y Domiciliaciones\",\n If(Flow.bot_intent == \"3\",              \"Cuentas - Saldos y movimientos\",\n If(Flow.bot_intent == \"4\",              \"Cuentas - Contratación Cancelación\",\n If(Flow.bot_intent == \"5\",              \"Cuentas - Otros\",  If(Flow.bot_intent == \"6\",              \"Tarjetas - Bloqueo y Desbloqueo\",\n If(Flow.bot_intent == \"7\",              \"Tarjetas - Contratación y Cancelación\",\n If(Flow.bot_intent == \"8\",              \"Tarjetas - Otros\",\n If(Flow.bot_intent == \"9\",              \"Préstamos e hipotecas - Amortización anticipada\",\n If(Flow.bot_intent == \"10\",              \"Préstamos e hipotecas - Contratación\", If(Flow.bot_intent == \"11\",              \"Préstamos e hipotecas - Otros\",\n If(Flow.bot_intent == \"12\",              \"Seguros - Siniestros\",\n If(Flow.bot_intent == \"13\",              \"Seguros - Contratación Cancelación\",\n If(Flow.bot_intent == \"14\",              \"Seguros - Otros\",\n If(Flow.bot_intent == \"15\",              \"Otros - Reclamos\", If(Flow.bot_intent == \"16\",              \"Otros - Claves\",\n If(Flow.bot_intent == \"17\",              \"Otros - Consultas de oficina\",\n If(Flow.bot_intent == \"18\",              \"Otros - Datos personales\",\n If(Flow.bot_intent == \"19\",              \"Otros - Información de ahorros e inversión\",\n \"\")))))))))))))))))))"
+          - transferToAcd:
+              name: Transfer to ACD
+              targetQueue:
+                lit:
+                  name: modulosComunes
+              preTransferAudio:
+                exp: Append(ToAudioBlank(250), ToAudioTTS("A continuación, le pondremos en contacto con un agente"))
+              failureTransferAudio:
+                exp: Append(ToAudioBlank(250), ToAudioTTS("Ahora mismo, no podemos ponerle en contacto con un agente"))
+              priority:
+                lit: 0
+              preferredAgents:
+                noValue: true
+              languageSkill:
+                noValue: true
+              failureOutputs:
+                errorType:
+                  noValue: true
+                errorMessage:
+                  noValue: true
+          - disconnect:
+              name: Disconnect
