@@ -1,5 +1,5 @@
 inboundCall:
-  name: IntentBotExample
+  name: "{{example_flow_name}}"
   division: "{{division}}"
   startUpRef: "/inboundCall/tasks/task[New Task 1_10]"
   defaultLanguage: "{{default_language}}"
