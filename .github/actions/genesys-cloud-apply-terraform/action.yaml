@@ -15,7 +15,7 @@ runs:
     - run: |
         cd $GITHUB_WORKSPACE/PLAY
         terraform init 
-        terraform apply --auto-approve -input=false -var="GENESYSCLOUD_CLIENT_ID=$GENESYSCLOUD_OAUTHCLIENT_ID" -var="GENESYSCLOUD_CLIENT_SECRET=$GENESYSCLOUD_OAUTHCLIENT_SECRET"
+        terraform apply --auto-approve -input=false -var"GENESYSCLOUD_REGION=$GENESYSCLOUD_REGION" -var="GENESYSCLOUD_CLIENT_ID=${{ secrets.GENESYSCLOUD_CLIENT_ID }}" -var="GENESYSCLOUD_CLIENT_SECRET=${{ secrets.GENESYSCLOUD_CLIENT_SECRET }}"
         cd $GITHUB_WORKSPACE
       shell: bash
         

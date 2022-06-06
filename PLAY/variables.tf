@@ -17,3 +17,9 @@ variable "GENESYSCLOUD_CLIENT_SECRET" {
     sensitive = true
 }
 
+variable "GENESYSCLOUD_REGION" {
+    type = string
+    description = "GenesysCloud Region"
+    sensitive = true
+}
+
