@@ -44,7 +44,7 @@ jobs:
       TF_WORKSPACE: "PLAY"
     steps:
       - uses: actions/checkout@v2
-      - uses: ./.github/actions/genesys-cloud-dev-tools
+      - uses: ./.github/actions/genesys-cloud-archy
       - uses: hashicorp/setup-terraform@v2
         with:
           terraform_version: 1.1.9
