@@ -8,3 +8,8 @@ terraform {
   }
 }
 
+provider "genesyscloud" {
+  oauthclient_id       = "${var.GENESYSCLOUD_CLIENT_ID}"
+  oauthclient_secret   = "${var.GENESYSCLOUD_CLIENT_SECRET}"
+  aws_region           = "${var.GENESYSCLOUD_REGION}"
+}
