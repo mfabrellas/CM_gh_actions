@@ -13,7 +13,7 @@
 #  The deploy-email-flow-dev and deploy-email-flow-test contain the same steps, but are configured with
 #  OAuth Credentials and environment variables specific to each of our two Genesys Cloud environments (dev and test).
 ###
-name: Genesys Cloud Email Non-Prod Deploy
+name: Pipeline with Archy
 on:
   push:
     branches: [main]
@@ -45,7 +45,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/genesys-cloud-dev-tools
-      - uses: hashicorp/setup-terraform@v1
+      - uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.1.7
       - uses: ./.github/actions/genesys-cloud-apply-terraform
       - uses: ./.github/actions/genesys-cloud-publish-archy-flow
         with:
