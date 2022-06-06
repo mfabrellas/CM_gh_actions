@@ -1,0 +1,20 @@
+###
+#  This action actually executes Archy. Also, this is the first action where we created input values that we pass into the action.
+#  You could re-use this action to deploy multiple flows.
+###
+name: "Publish Archy Flow"
+description: "Use Archy to Publish Flows"
+inputs:
+  architect-flow-path: # id of input
+    description: "The fully qualified directory and file name for the architect flow that will be published"
+    required: true
+  architect-optionsfile-path: # id of input
+    description: "The fully qualified directory and file name for the options file executed by the flow."
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        export PATH=$PATH:$GITHUB_WORKSPACE/archy
+        archy publish --forceUnlock --optionsFile ${{inputs.architect-optionsfile-path}} --file ${{inputs.architect-flow-path}} --clientId $GENESYSCLOUD_OAUTHCLIENT_ID --clientSecret $GENESYSCLOUD_OAUTHCLIENT_SECRET --location $GENESYSCLOUD_ARCHY_REGION  
+      shell: bash

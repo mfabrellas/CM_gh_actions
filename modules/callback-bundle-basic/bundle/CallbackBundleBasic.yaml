@@ -1,0 +1,464 @@
+commonModule:
+  name: "{{common_module_name}}"
+  division: Home
+  defaultLanguage: es-us
+  supportedLanguages:
+    es-us:
+      none: true
+  variables:
+    - stringVariable:
+        name: "Common.{{phone_nr}}"
+        initialValue:
+          noValue: true
+        isInput: true
+    - queueVariable:
+        name: "Common.{{queue}}"
+        initialValue:
+          noValue: true
+        isInput: true
+    - booleanVariable:
+        name: "Common.{{scheduleOpen}}"
+        initialValue:
+          lit: false
+        isInput: true
+    - stringVariable:
+        name: "Common.{{phone_id}}"
+        initialValue:
+          noValue: true
+        isInput: true
+    - stringVariable:
+        name: "Common.{{exit_code}}"
+        initialValue:
+          noValue: true
+        isInput: false
+        isOutput: true
+    - stringVariable:
+        name: "Common.{{exit_description}}"
+        initialValue:
+          noValue: true
+        isInput: false
+        isOutput: true
+  settingsCommonModule:
+    compatibleFlowTypes:
+      - flowType: inboundcall
+      - flowType: inqueuecall
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        noValue: true
+    callBridge:
+      processingPrompt:
+        noValue: true
+    callDataSecure:
+      processingPrompt:
+        noValue: true
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsPrompts:
+    ensureAudioInPrompts: false
+  startUpTaskActions:
+    - decision:
+        name: Schedule Open
+        condition:
+          exp: "Common.{{scheduleOpen}}"
+        outputs:
+          yes:
+            actions:
+              - switch:
+                  name: Open Options
+                  evaluate:
+                    firstTrue:
+                      default:
+                        actions:
+                          - collectInput:
+                              name: no phone
+                              inputData:
+                                var: Task.option
+                              digits:
+                                range:
+                                  min: 1
+                                  max: 9
+                              interDigitTimeout:
+                                noValue: true
+                              noEntryTimeout:
+                                noValue: true
+                              ref: .././references/CallbackAudios.yaml#/actions/inputAudio[audio_open_4]
+                              acceptJustStar:
+                                lit: false
+                              acceptJustPound:
+                                lit: false
+                              verificationType: none
+                          - updateData:
+                              name: generate callback number
+                              statements:
+                                - string:
+                                    variable: Task.callbackNumber
+                                    value:
+                                      exp: If(Length(Task.option) == 9, Task.option,"noCallback")
+                      cases:
+                        - case:
+                            value:
+                              exp: if(IsSet(Common.{{phone_nr}}) and IsSet(Common.{{phone_id}}), true, false )
+                            actions:
+                              - collectInput:
+                                  name: phone and phone_id
+                                  inputData:
+                                    var: Task.option
+                                  digits:
+                                    range:
+                                      min: 1
+                                      max: 9
+                                  interDigitTimeout:
+                                    noValue: true
+                                  noEntryTimeout:
+                                    noValue: true
+                                  ref: .././references/CallbackAudios.yaml#/actions/inputAudio[audio_open_1]
+                                  acceptJustStar:
+                                    lit: false
+                                  acceptJustPound:
+                                    lit: false
+                                  verificationType: none
+                              - updateData:
+                                  name: generate callback number
+                                  statements:
+                                    - string:
+                                        variable: Task.callbackNumber
+                                        value:
+                                          exp: "If(Length(Task.option) == 9, Task.option, \nIf(Task.option == \"1\", Common.{{phone_id}},\nIf(Task.option == \"2\", Common.{{phone_nr}},\n\"noCallback\"\n)))"
+                        - case:
+                            value:
+                              exp: if(IsNotSetOrEmpty(Common.{{phone_nr}}) and IsSet(Common.{{phone_id}}), true, false )
+                            actions:
+                              - collectInput:
+                                  name: only phone_id
+                                  inputData:
+                                    var: Task.option
+                                  digits:
+                                    range:
+                                      min: 1
+                                      max: 9
+                                  interDigitTimeout:
+                                    noValue: true
+                                  noEntryTimeout:
+                                    noValue: true
+                                  ref: .././references/CallbackAudios.yaml#/actions/inputAudio[audio_open_2]
+                                  acceptJustStar:
+                                    lit: false
+                                  acceptJustPound:
+                                    lit: false
+                                  verificationType: none
+                              - updateData:
+                                  name: generate callback number
+                                  statements:
+                                    - string:
+                                        variable: Task.callbackNumber
+                                        value:
+                                          exp: "If(Length(Task.option) == 9, Task.option, \nIf(Task.option == \"1\", Common.{{phone_id}},\n\"noCallback\"\n))"
+                        - case:
+                            value:
+                              exp: if(IsSet(Common.{{phone_nr}}) and IsNotSetOrEmpty(Common.{{phone_id}}), true, false )
+                            actions:
+                              - collectInput:
+                                  name: only phone
+                                  inputData:
+                                    var: Task.option
+                                  digits:
+                                    range:
+                                      min: 1
+                                      max: 9
+                                  interDigitTimeout:
+                                    noValue: true
+                                  noEntryTimeout:
+                                    noValue: true
+                                  ref: .././references/CallbackAudios.yaml#/actions/inputAudio[audio_open_3]
+                                  acceptJustStar:
+                                    lit: false
+                                  acceptJustPound:
+                                    lit: false
+                                  verificationType: none
+                              - updateData:
+                                  name: generate callback number
+                                  statements:
+                                    - string:
+                                        variable: Task.callbackNumber
+                                        value:
+                                          exp: "If(Length(Task.option) == 9, Task.option, \nIf(Task.option == \"1\", Common.{{phone_nr}},\n\"noCallback\"\n))"
+              - setParticipantData:
+                  name: Set Participant Data
+                  attributes:
+                    - attribute:
+                        name:
+                          lit: phone
+                        value:
+                          exp: if(IsSet(Common.{{phone_nr}}), Common.{{phone_nr}}, "NotSetOrEmpty")
+                    - attribute:
+                        name:
+                          lit: phone_id
+                        value:
+                          exp: if(IsSet(Common.{{phone_id}}), Common.{{phone_id}}, "NotSetOrEmpty")
+                    - attribute:
+                        name:
+                          lit: callbackNumber
+                        value:
+                          exp: if(IsSet(Task.callbackNumber), Task.callbackNumber, "NotSetOrEmpty")
+                    - attribute:
+                        name:
+                          lit: horario
+                        value:
+                          lit: open
+              - decision:
+                  name: callback or not
+                  condition:
+                    exp: If(Task.callbackNumber != "noCallback", true, false)
+                  outputs:
+                    yes:
+                      actions:
+                        - createCallback:
+                            name: Create Callback
+                            queue:
+                              exp: "Common.{{queue}}"
+                            callbackNumber:
+                              exp: ToPhoneNumber(Task.callbackNumber)
+                            calleeName:
+                              noValue: true
+                        - ref: .././references/CallbackAudios.yaml#/actions/playAudio[audio_callback]
+                        - updateData:
+                            name: Update Data
+                            statements:
+                              - string:
+                                  variable: "Common.{{exit_code}}"
+                                  value:
+                                    lit: "200"
+                              - string:
+                                  variable: "Common.{{exit_description}}"
+                                  value:
+                                    lit: Callback creado
+                    no:
+                      actions:
+                        - updateData:
+                            name: Update Data
+                            statements:
+                              - string:
+                                  variable: "Common.{{exit_code}}"
+                                  value:
+                                    lit: "404"
+                              - string:
+                                  variable: "Common.{{exit_description}}"
+                                  value:
+                                    lit: No callback
+                        - endTask:
+                            name: Salir del módulo común
+          no:
+            actions:
+              - switch:
+                  name: Open Options
+                  evaluate:
+                    firstTrue:
+                      default:
+                        actions:
+                          - collectInput:
+                              name: no phone
+                              inputData:
+                                var: Task.option
+                              digits:
+                                range:
+                                  min: 1
+                                  max: 9
+                              interDigitTimeout:
+                                noValue: true
+                              noEntryTimeout:
+                                noValue: true
+                              ref: .././references/CallbackAudios.yaml#/actions/inputAudio[audio_close_4]
+                              acceptJustStar:
+                                lit: false
+                              acceptJustPound:
+                                lit: false
+                              verificationType: none
+                          - updateData:
+                              name: generate callback number
+                              statements:
+                                - string:
+                                    variable: Task.callbackNumber
+                                    value:
+                                      exp: If(Length(Task.option) == 9, Task.option,"noCallback")
+                      cases:
+                        - case:
+                            value:
+                              exp: if(IsSet(Common.{{phone_nr}}) and IsSet(Common.{{phone_id}}), true, false )
+                            actions:
+                              - collectInput:
+                                  name: phone and phone_id
+                                  inputData:
+                                    var: Task.option
+                                  digits:
+                                    range:
+                                      min: 1
+                                      max: 9
+                                  interDigitTimeout:
+                                    noValue: true
+                                  noEntryTimeout:
+                                    noValue: true
+                                  ref: .././references/CallbackAudios.yaml#/actions/inputAudio[audio_close_1]
+                                  acceptJustStar:
+                                    lit: false
+                                  acceptJustPound:
+                                    lit: false
+                                  verificationType: none
+                              - updateData:
+                                  name: generate callback number
+                                  statements:
+                                    - string:
+                                        variable: Task.callbackNumber
+                                        value:
+                                          exp: "If(Length(Task.option) == 9, Task.option, \nIf(Task.option == \"1\", Common.{{phone_id}},\nIf(Task.option == \"2\", Common.{{phone_nr}},\n\"noCallback\"\n)))"
+                        - case:
+                            value:
+                              exp: if(IsNotSetOrEmpty(Common.{{phone_nr}}) and IsSet(Common.{{phone_id}}), true, false )
+                            actions:
+                              - collectInput:
+                                  name: only phone_id
+                                  inputData:
+                                    var: Task.option
+                                  digits:
+                                    range:
+                                      min: 1
+                                      max: 9
+                                  interDigitTimeout:
+                                    noValue: true
+                                  noEntryTimeout:
+                                    noValue: true
+                                  ref: .././references/CallbackAudios.yaml#/actions/inputAudio[audio_close_2]
+                                  acceptJustStar:
+                                    lit: false
+                                  acceptJustPound:
+                                    lit: false
+                                  verificationType: none
+                              - updateData:
+                                  name: generate callback number
+                                  statements:
+                                    - string:
+                                        variable: Task.callbackNumber
+                                        value:
+                                          exp: "If(Length(Task.option) == 9, Task.option, \nIf(Task.option == \"1\", Common.{{phone_id}},\n\"noCallback\"\n))"
+                        - case:
+                            value:
+                              exp: if(IsSet(Common.{{phone_nr}}) and IsNotSetOrEmpty(Common.{{phone_id}}), true, false )
+                            actions:
+                              - collectInput:
+                                  name: only phone
+                                  inputData:
+                                    var: Task.option
+                                  digits:
+                                    range:
+                                      min: 1
+                                      max: 9
+                                  interDigitTimeout:
+                                    noValue: true
+                                  noEntryTimeout:
+                                    noValue: true
+                                  ref: .././references/CallbackAudios.yaml#/actions/inputAudio[audio_close_3]
+                                  acceptJustStar:
+                                    lit: false
+                                  acceptJustPound:
+                                    lit: false
+                                  verificationType: none
+                              - updateData:
+                                  name: generate callback number
+                                  statements:
+                                    - string:
+                                        variable: Task.callbackNumber
+                                        value:
+                                          exp: "If(Length(Task.option) == 9, Task.option, \nIf(Task.option == \"1\", Common.{{phone_nr}},\n\"noCallback\"\n))"
+              - setParticipantData:
+                  name: Set Participant Data
+                  attributes:
+                    - attribute:
+                        name:
+                          lit: phone
+                        value:
+                          exp: if(IsSet(Common.{{phone_nr}}), Common.{{phone_nr}}, "NotSetOrEmpty")
+                    - attribute:
+                        name:
+                          lit: phone_id
+                        value:
+                          exp: if(IsSet(Common.{{phone_id}}), Common.{{phone_id}}, "NotSetOrEmpty")
+                    - attribute:
+                        name:
+                          lit: callbackNumber
+                        value:
+                          exp: if(IsSet(Task.callbackNumber), Task.callbackNumber, "NotSetOrEmpty")
+                    - attribute:
+                        name:
+                          lit: horario
+                        value:
+                          lit: close
+              - decision:
+                  name: callback or not
+                  condition:
+                    exp: If(Task.callbackNumber != "noCallback", true, false)
+                  outputs:
+                    yes:
+                      actions:
+                        - createCallback:
+                            name: Create Callback
+                            queue:
+                              exp: "Common.{{queue}}"
+                            callbackNumber:
+                              exp: ToPhoneNumber(Task.callbackNumber)
+                            calleeName:
+                              noValue: true
+                        - ref: .././references/CallbackAudios.yaml#/actions/playAudio[audio_callback]
+                        - updateData:
+                            name: Update Data
+                            statements:
+                              - string:
+                                  variable: "Common.{{exit_code}}"
+                                  value:
+                                    lit: "200"
+                              - string:
+                                  variable: "Common.{{exit_description}}"
+                                  value:
+                                    lit: Callback creado
+                    no:
+                      actions:
+                        - updateData:
+                            name: Update Data
+                            statements:
+                              - string:
+                                  variable: "Common.{{exit_code}}"
+                                  value:
+                                    lit: "404"
+                              - string:
+                                  variable: "Common.{{exit_description}}"
+                                  value:
+                                    lit: No callback
+                        - ref: .././references/CallbackAudios.yaml#/actions/playAudio[audio_no_callback]
+    - disconnect:
+        name: Disconnect

@@ -1,0 +1,221 @@
+commonModule:
+  name: "{{common_module_name}}"
+  division: "{{division}}"
+  defaultLanguage: "{{default_language}}"
+  supportedLanguages:
+    es-us:
+      none: true
+  variables:
+    - stringVariable:
+        name: Common.intent_category
+        initialValue:
+          noValue: true
+        isInput: true
+        isOutput: false
+    - stringVariable:
+        name: Common.routing_channel
+        initialValue:
+          noValue: true
+        isInput: false
+        isOutput: true
+  settingsCommonModule:
+    compatibleFlowTypes:
+      - flowType: inboundcall
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        noValue: true
+    callBridge:
+      processingPrompt:
+        noValue: true
+    callDataSecure:
+      processingPrompt:
+        noValue: true
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  startUpTaskActions:
+    - callData:
+        name: Agents on PoolAttention queue
+        processingPrompt:
+          noValue: true
+        timeout:
+          lit:
+            minutes: 1
+        category:
+          CCHUB_WORK_VIRGINIA:
+            dataAction:
+              Agents Logged Into Queue:
+                inputs:
+                  QueueID:
+                    exp: FindQueue("{{queue2_name}}")
+                successOutputs:
+                  total_agents_on_queue:
+                    var: Task.nr_agents_poolattention
+                failureOutputs:
+                  errorCode:
+                    noValue: true
+                  status:
+                    noValue: true
+                  correlationId:
+                    noValue: true
+                  entityId:
+                    noValue: true
+                  entityName:
+                    noValue: true
+                  userMessage:
+                    noValue: true
+                  userParamsMessage:
+                    noValue: true
+                  userParams.key:
+                    noValue: true
+                  userParams.value:
+                    noValue: true
+                  details.errorCode:
+                    noValue: true
+                  details.fieldName:
+                    noValue: true
+                  details.entityId:
+                    noValue: true
+                  details.entityName:
+                    noValue: true
+    - switch:
+        name: Sales service?
+        evaluate:
+          firstTrue:
+            default:
+              actions:
+                - switch:
+                    name: Agents on PoolAttention?
+                    evaluate:
+                      firstTrue:
+                        default:
+                          actions:
+                            - playAudio:
+                                name: Play Audio
+                                audio:
+                                  tts: Mantente a la espera, vamos a transferirte con uno de nuestros agentes
+                            - updateData:
+                                name: CONTACTCENTER
+                                statements:
+                                  - string:
+                                      variable: Common.routing_channel
+                                      value:
+                                        lit: ContactCenter
+                        cases:
+                          - case:
+                              value:
+                                exp: If(Task.nr_agents_poolattention > 0, true, false)
+                              actions:
+                                - playAudio:
+                                    name: Play Audio
+                                    audio:
+                                      tts: Mantente a la espera, vamos a transferirte con uno de nuestros agentes
+                                - transferToAcd:
+                                    name: Transfer to PoolAttention
+                                    targetQueue:
+                                      lit:
+                                        name: "{{queue2_name}}"
+                                    overrideInQueueFlow:
+                                      name: "{{queue2_flow2_name}}"
+                                    preTransferAudio:
+                                      exp: AudioPlaybackOptions(ToAudioBlank(0), true)
+                                    failureTransferAudio:
+                                      tts: Algo ha fallado
+                                    priority:
+                                      lit: 0
+                                    preferredAgents:
+                                      noValue: true
+                                    languageSkill:
+                                      noValue: true
+                                    failureOutputs:
+                                      errorType:
+                                        noValue: true
+                                      errorMessage:
+                                        noValue: true
+            cases:
+              - case:
+                  value:
+                    exp: If((Common.intent_category == "SimpleSales") or (Common.intent_category == "ComplexSales"), true, false)
+                  actions:
+                    - switch:
+                        name: Agents on PoolAttention?
+                        evaluate:
+                          firstTrue:
+                            default:
+                              actions:
+                                - playAudio:
+                                    name: Play Audio
+                                    audio:
+                                      tts: Nuestros agentes no están disponibles en este momento.
+                                - updateData:
+                                    name: CALLBACK
+                                    statements:
+                                      - string:
+                                          variable: Common.routing_channel
+                                          value:
+                                            lit: Callback
+                            cases:
+                              - case:
+                                  value:
+                                    exp: If(Task.nr_agents_poolattention > 0, true, false)
+                                  actions:
+                                    - playAudio:
+                                        name: Play Audio
+                                        audio:
+                                          tts: Mantente a la espera, vamos a transferirte con uno de nuestros agentes
+                                    - transferToAcd:
+                                        name: Transfer to PoolAttention
+                                        targetQueue:
+                                          lit:
+                                            name: "{{queue2_name}}"
+                                        overrideInQueueFlow:
+                                          name: "{{queue2_flow1_name}}"
+                                        preTransferAudio:
+                                          exp: AudioPlaybackOptions(ToAudioBlank(0), true)
+                                        failureTransferAudio:
+                                          tts: Algo ha fallado
+                                        priority:
+                                          lit: 0
+                                        preferredAgents:
+                                          noValue: true
+                                        languageSkill:
+                                          noValue: true
+                                        failureOutputs:
+                                          errorType:
+                                            noValue: true
+                                          errorMessage:
+                                            noValue: true
+    - endTask:
+        name: Salir del módulo común

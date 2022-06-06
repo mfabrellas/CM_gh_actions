@@ -1,0 +1,18 @@
+substitutions:
+
+#COMMON MODULE NAME
+  common_module_name: CallbackBundleBasic
+
+#COMMON MODULE VARIABLES
+#input
+  phone_nr: phone_nr
+  phone_id: phone_id 
+  queue: queue
+  scheduleOpen: scheduleOpen 
+#output
+  exit_code: exit_code 
+  exit_description: exit_description 
+
+
+#QUEUE NAME
+  queue_name: clientVIP

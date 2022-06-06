@@ -1,0 +1,83 @@
+actions:
+
+  - playAudio:
+      #Wait for an agent
+      refId: audio_callback
+      name: Play Audio
+      audio:
+        tts: Muchas gracias, le llamaremos en cuanto uno de nuestros gestores este disponible
+
+  - playAudio:
+      #No callback: Good-bye audio
+      refId: audio_no_callback      
+      name: Play Audio
+      audio:
+        tts: Muchas gracias por llamar a be be uve a
+
+#OPEN SCHEDULE
+  - inputAudio:
+      #Phone and validated phone
+      refId: audio_open_1
+      exp: Append(ToAudioTTS("Todos nuestros gestores se encuentran ocupados en estos momentos,"), 
+                  ToAudioTTS("Si quiere que le llamemos nosotros cuando alguno se encuentre disponible"), ToAudioBlank(100), 
+                  ToAudioTTS("pulse 1,"), ToAudioTTS("para que le llamemos a su teléfono validado"), ToAudioBlank(100), 
+                  ToAudioTTS("pulse 2,"), ToAudioTTS("para que le llamemos al teléfono desde el que nos llama"), ToAudioBlank(100), 
+                  ToAudioTTS("para que le llamemos a otro teléfono, márquelo a continuación"), ToAudioBlank(100), 
+                  ToAudioTTS("si quiere esperar para ser atendido, permanezca a la espera"))
+  - inputAudio:
+      #Only validated phone
+      refId: audio_open_2
+      exp: Append(ToAudioTTS("Todos nuestros gestores se encuentran ocupados en estos momentos,"), 
+                  ToAudioTTS("Si quiere que le llamemos nosotros cuando alguno se encuentre disponible"), ToAudioBlank(100), 
+                  ToAudioTTS("pulse 1,"), ToAudioTTS("para que le llamemos a su teléfono validado"), ToAudioBlank(100), 
+                  ToAudioTTS("para que le llamemos a otro teléfono, márquelo a continuación"), ToAudioBlank(100), 
+                  ToAudioTTS("si quiere esperar para ser atendido, permanezca a la espera"))
+  - inputAudio:
+      #Only phone
+      refId: audio_open_3
+      exp: Append(ToAudioTTS("Todos nuestros gestores se encuentran ocupados en estos momentos,"), 
+                  ToAudioTTS("Si quiere que le llamemos nosotros cuando alguno se encuentre disponible"), ToAudioBlank(100), 
+                  ToAudioTTS("pulse 1,"), ToAudioTTS("para que le llamemos al teléfono desde el que nos llama"), ToAudioBlank(100), 
+                  ToAudioTTS("para que le llamemos a otro teléfono, márquelo a continuación"), ToAudioBlank(100), 
+                  ToAudioTTS("si quiere esperar para ser atendido, permanezca a la espera"))
+  - inputAudio:
+      #No phone
+      refId: audio_open_4
+      exp: Append(ToAudioTTS("Todos nuestros gestores se encuentran ocupados en estos momentos,"), 
+                  ToAudioTTS("Si quiere que le llamemos nosotros cuando alguno se encuentre disponible"), ToAudioBlank(100), 
+                  ToAudioTTS("marque el teléfono al que quiere que le devolvamos la llamada"), ToAudioBlank(100), 
+                  ToAudioTTS("si quiere esperar para ser atendido, permanezca a la espera"))
+
+#CLOSE SCHEDULE
+  - inputAudio:
+      #Phone and validated phone
+      refId: audio_close_1
+      exp: Append(ToAudioTTS("Ha llamado fuera de nuestro horario comercial,"), 
+                  ToAudioTTS("Si quiere que le llamemos nosotros en horario de oficina"), ToAudioBlank(100), 
+                  ToAudioTTS("pulse 1,"), ToAudioTTS("para que le llamemos a su teléfono validado"), ToAudioBlank(100), 
+                  ToAudioTTS("pulse 2,"), ToAudioTTS("para que le llamemos al teléfono desde el que nos llama"), ToAudioBlank(100), 
+                  ToAudioTTS("para que le llamemos a otro teléfono, márquelo a continuación"), ToAudioBlank(100), 
+                  ToAudioTTS("si prefiere llamarnos usted en horario de oficina, cuelgue la llamada"))
+  - inputAudio:
+      #Only validated phone
+      refId: audio_close_2
+      exp: Append(ToAudioTTS("Ha llamado fuera de nuestro horario comercial,"), 
+                  ToAudioTTS("Si quiere que le llamemos nosotros en horario de oficina"), ToAudioBlank(100), 
+                  ToAudioTTS("pulse 1,"), ToAudioTTS("para que le llamemos a su teléfono validado"), ToAudioBlank(100), 
+                  ToAudioTTS("para que le llamemos a otro teléfono, márquelo a continuación"), ToAudioBlank(100), 
+                  ToAudioTTS("si prefiere llamarnos usted en horario de oficina, cuelgue la llamada"))
+  - inputAudio:
+      #Only phone
+      refId: audio_close_3
+      exp: Append(ToAudioTTS("Ha llamado fuera de nuestro horario comercial,"), 
+                  ToAudioTTS("Si quiere que le llamemos nosotros en horario de oficina"), ToAudioBlank(100), 
+                  ToAudioTTS("pulse 1,"), ToAudioTTS("para que le llamemos al teléfono desde el que nos llama"), ToAudioBlank(100), 
+                  ToAudioTTS("para que le llamemos a otro teléfono, márquelo a continuación"), ToAudioBlank(100), 
+                  ToAudioTTS("si prefiere llamarnos usted en horario de oficina, cuelgue la llamada"))
+  - inputAudio:
+      #No phone
+      refId: audio_close_4
+      exp: Append(ToAudioTTS("Ha llamado fuera de nuestro horario comercial,"), 
+                  ToAudioTTS("Si quiere que le llamemos nosotros en horario de oficina"), ToAudioBlank(100), 
+                  ToAudioTTS("marque el numero al que quiere que le devolvamos la llamada"), ToAudioBlank(100), 
+                  ToAudioTTS("si prefiere llamarnos usted en horario de oficina, cuelgue la llamada"))                

@@ -1,0 +1,236 @@
+commonModule:
+  name: "{{common_module_name}}"
+  division: "{{division}}"
+  defaultLanguage: "{{default_language}}"
+  supportedLanguages:
+    en-us:
+      none: true
+    es-us:
+      none: true
+  variables:
+    - booleanVariable:
+        name: Common.digital_client
+        initialValue:
+          noValue: true
+        isInput: true
+        isOutput: false
+    - booleanVariable:
+        name: Common.digital_solution
+        initialValue:
+          noValue: true
+        isInput: true
+        isOutput: false
+    - booleanVariable:
+        name: Common.exceed_age
+        initialValue:
+          noValue: true
+        isInput: true
+        isOutput: false
+    - stringVariable:
+        name: Common.routing_channel
+        initialValue:
+          noValue: true
+        isInput: false
+        isOutput: true
+    - stringVariable:
+        name: Common.intent_category
+        initialValue:
+          noValue: true
+        isInput: true
+        isOutput: false
+    - booleanVariable:
+        name: Common.ivr_available
+        initialValue:
+          noValue: true
+        isInput: true
+        isOutput: false
+    - stringVariable:
+        name: Common.segment_type
+        initialValue:
+          noValue: true
+        isInput: true
+        isOutput: false
+    - booleanVariable:
+        name: Common.worthwhile_offer
+        initialValue:
+          noValue: true
+        isInput: true
+        isOutput: false
+  settingsCommonModule:
+    compatibleFlowTypes:
+      - flowType: inboundcall
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        noValue: true
+    callBridge:
+      processingPrompt:
+        noValue: true
+    callDataSecure:
+      processingPrompt:
+        noValue: true
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  startUpTaskActions:
+    - switch:
+        name: Switch
+        evaluate:
+          firstTrue:
+            default:
+              actions:
+                - updateData:
+                    name: Update Data
+                    statements:
+                      - string:
+                          variable: Common.routing_channel
+                          value:
+                            exp: "If((Common.segment_type == \"Value\"),        
+                                      \"OneToOne\", \n
+
+                                  If((Common.segment_type == \"Mass\"),            
+                                      \"PoolAttention\", \n
+
+                                      \"ContactCenter\"))\n"
+            cases:
+##############################
+###   CATEGORY 1: CLAIMS   ###
+############################## 
+              - case:
+                  value:
+                    exp: If(Common.intent_category == "Claims", true, false)
+                  actions:
+                    - updateData:
+                        name: Update Data 1
+                        statements:
+                          - string:
+                              variable: Common.routing_channel
+                              value:
+                                exp: "\"ContactCenter\""
+#####################################
+###   CATEGORY 2: LOW SERVICING   ###
+#####################################
+              - case:
+                  value:
+                    exp: If(Common.intent_category == "LowServicing", true, false)
+                  actions:
+                    - updateData:
+                        name: Update Data 2
+                        statements:
+                          - string:
+                              variable: Common.routing_channel
+                              value:
+                                exp: "If((Common.digital_solution == true) and 
+                                        (Common.digital_client == true),        
+                                        \"DeepLink\", \n
+
+                                    If(Common.ivr_available == true,           
+                                        \"IVR\", \n
+
+                                        \"ContactCenter\"))\n"
+#####################################################
+###   CATEGORY 3: NO COMMERCIAL YIELD SERVICING   ###
+#####################################################
+              - case:
+                  value:
+                    exp: If(Common.intent_category == "NoCommercialYieldServicing", true, false)
+                  actions:
+                    - updateData:
+                        name: Update Data 3
+                        statements:
+                          - string:
+                              variable: Common.routing_channel
+                              value:
+                                exp: "If((Common.worthwhile_offer == true) and
+                                        (Common.segment_type == \"Value\"),        
+                                        \"OneToOne\", \n
+
+                                    If((Common.worthwhile_offer == true) and
+                                        (Common.segment_type == \"Mass\"),            
+                                        \"PoolAttention\", \n
+
+                                        \"ContactCenter\"))\n"
+##################################################
+###   CATEGORY 4: COMMERCIAL YIELD SERVICING   ###
+##################################################
+              - case:
+                  value:
+                    exp: If(Common.intent_category == "CommercialYieldServicing", true, false)
+                  actions:
+                    - updateData:
+                        name: Update Data 4
+                        statements:
+                          - string:
+                              variable: Common.routing_channel
+                              value:
+                                exp: "If((Common.segment_type == \"Value\"),        
+                                        \"OneToOne\", \n
+
+                                        \"PoolAttention\")\n"
+####################################
+###   CATEGORY 5: SIMPLE SALES   ###
+####################################
+              - case:
+                  value:
+                    exp: If(Common.intent_category == "SimpleSales", true, false)
+                  actions:
+                    - updateData:
+                        name: Update Data 5
+                        statements:
+                          - string:
+                              variable: Common.routing_channel
+                              value:
+                                exp: "If((Common.segment_type == \"Value\"),        
+                                        \"OneToOne\", \n
+
+                                        \"PoolAttention\")\n"
+#####################################
+###   CATEGORY 6: COMPLEX SALES   ###
+#####################################
+              - case:
+                  value:
+                    exp: If(Common.intent_category == "ComplexSales", true, false)
+                  actions:
+                    - updateData:
+                        name: Update Data 6
+                        statements:
+                          - string:
+                              variable: Common.routing_channel
+                              value:
+                                exp: "If((Common.segment_type == \"Value\"),        
+                                        \"OneToOne\", \n
+
+                                        \"PoolSpecialist\")\n"
+    - endTask:
+        name: Salir del módulo común

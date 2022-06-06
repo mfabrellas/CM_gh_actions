@@ -1,0 +1,983 @@
+botFlow:
+  name: "{{common_module_name}}"
+  division: "{{division}}"
+  startUpRef: "/botFlow/bots/bot[Default Bot_10]"
+  defaultLanguage: "{{default_language}}"
+  supportedLanguages:
+    es-us:
+      none: true
+  variables:
+    - stringVariable:
+        name: Flow.bot_intent
+        initialValue:
+          noValue: true
+        isInput: false
+        isOutput: true
+    - stringVariable:
+        name: Flow.exit_code
+        initialValue:
+          noValue: true
+        isInput: false
+        isOutput: true
+    - stringVariable:
+        name: Flow.exit_description
+        initialValue:
+          noValue: true
+        isInput: false
+        isOutput: true
+    - stringVariable:
+        name: Flow.intent_category
+        initialValue:
+          noValue: true
+        isInput: false
+        isOutput: true
+  settingsActionDefaults:
+    askForIntent:
+      voiceEndOfInputTimeout:
+        lit:
+          seconds: 1
+    askForBoolean:
+      voiceEndOfInputTimeout:
+        lit:
+          seconds: 1
+    askForSlot:
+      voiceEndOfInputTimeout:
+        lit:
+          seconds: 1
+    loopAnythingElse:
+      voiceEndOfInputTimeout:
+        lit:
+          seconds: 1
+  settingsErrorHandling:
+    errorHandling:
+      exit:
+        none: true
+    enableAgentEscalation:
+      lit: true
+    errorEventHandover:
+      exp: "MakeCommunication(\n  \"Se produjo un error. Espere un momento mientras lo pongo en contacto con alguien que lo pueda ayudar.\")"
+    agentEscalationConfirmation:
+      exp: "MakeCommunication(\n  \"¿Desea hablar con un asesor?\")"
+    agentEscalationHandover:
+      exp: "MakeCommunication(\n  \"Espere un momento. Lo pondré en contacto con alguien.\")"
+    recognitionFailureEventHandover:
+      exp: "MakeCommunication(\n  \"No logro comprender lo que dice. Espere un momento mientras lo pongo en contacto con alguien que lo pueda ayudar.\")"
+    recognitionFailureEventHandling:
+      exit:
+        none: true
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: none
+  settingsBotFlow:
+    intentSettings:
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Cuentas - Transferencias, ¿es correcto?\")"
+          name: Cuentas - Transferencias
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Cuentas - Pago de Facturas y Domiciliaciones, ¿es correcto?\")"
+          name: Cuentas - Pago de Facturas y Domiciliaciones
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Cuentas - Saldos y movimientos, ¿es correcto?\")"
+          name: Cuentas - Saldos y movimientos
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Cuentas - Contratación Cancelación, ¿es correcto?\")"
+          name: Cuentas - Contratación Cancelación
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Cuentas - Otros, ¿es correcto?\")"
+          name: Cuentas - Otros
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Tarjetas - Bloqueo y Desbloqueo, ¿es correcto?\")"
+          name: Tarjetas - Bloqueo y Desbloqueo
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Tarjetas - Contratación y Cancelación, ¿es correcto?\")"
+          name: Tarjetas - Contratación y Cancelación
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Tarjetas - Otros, ¿es correcto?\")"
+          name: Tarjetas - Otros
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Préstamos e hipotecas - Amortización anticipada, ¿es correcto?\")"
+          name: Préstamos e hipotecas - Amortización anticipada
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Préstamos e hipotecas - Contratación, ¿es correcto?\")"
+          name: Préstamos e hipotecas - Contratación
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Préstamos e hipotecas - Otros, ¿es correcto?\")"
+          name: Préstamos e hipotecas - Otros
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Seguros - Siniestros, ¿es correcto?\")"
+          name: Seguros - Siniestros
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Seguros - Contratación Cancelación, ¿es correcto?\")"
+          name: Seguros - Contratación Cancelación
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Seguros - Otros, ¿es correcto?\")"
+          name: Seguros - Otros
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Otros - Reclamos, ¿es correcto?\")"
+          name: Otros - Reclamos
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Otros - Claves, ¿es correcto?\")"
+          name: Otros - Claves
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Otros - Consultas de oficina, ¿es correcto?\")"
+          name: Otros - Consultas de oficina
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Otros - Datos personales, ¿es correcto?\")"
+          name: Otros - Datos personales
+      - intent:
+          confirmation:
+            exp: "MakeCommunication(\n  \"Creo que quiere Otros - Información de ahorros e inversión, ¿es correcto?\")"
+          name: Otros - Información de ahorros e inversión
+  settingsUserInput:
+    enableBargeIn:
+      lit: true
+    enableAutomaticQuickReplies:
+      lit: true
+    noMatchesMax:
+      lit: 3
+    noInputsMax:
+      lit: 3
+    noInputsTimeout:
+      lit:
+        seconds: 7
+    confirmationRejectionsMax:
+      lit: 3
+    collectionLowConfidenceThreshold:
+      lit: 20
+    collectionHighConfidenceThreshold:
+      lit: 70
+    confirmationLowConfidenceThreshold:
+      lit: 40
+    noMatchApology:
+      exp: "MakeCommunication(\n  \"Lo siento.\")"
+    noInputApology:
+      exp: "MakeCommunication(\n  \"No logro escucharlo.\")"
+    noToConfirmationApology:
+      exp: "MakeCommunication(\n  \"Fue mi error.\")"
+    confirmationNoMatchApology:
+      exp: "MakeCommunication(\n  \"Responda sí o no.\")"
+    confirmationNoInputApology:
+      exp: "MakeCommunication(\n  \"No logro escucharlo. Responda sí o no.\")"
+  settingsKnowledge:
+    none: true
+  bots:
+    - bot:
+        name: Default Bot
+        refId: Default Bot_10
+        actions:
+          - askForIntent:
+              name: Ask for Intent
+              question:
+                exp: "MakeCommunication(\n  \"¿Qué le gustaría hacer?\")"
+              noInput:
+                exp: "MakeCommunication(\n  \"Describa su consulta con una oración corta, por ejemplo, \\\"Revisar mi saldo\\\"\")"
+              noMatch:
+                exp: "MakeCommunication(\n  \"Dígame una vez más lo que quiere hacer.\")"
+              voiceEndOfInputTimeout:
+                noValue: true
+              outputs:
+                intents:
+                  - intent:
+                      name: Cuentas - Transferencias
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "1"
+                      enabled: true
+                  - intent:
+                      name: Cuentas - Pago de Facturas y Domiciliaciones
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "2"
+                      enabled: true
+                  - intent:
+                      name: Cuentas - Saldos y movimientos
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "3"
+                      enabled: true
+                  - intent:
+                      name: Cuentas - Contratación Cancelación
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "4"
+                      enabled: true
+                  - intent:
+                      name: Cuentas - Otros
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "5"
+                      enabled: true
+                  - intent:
+                      name: Tarjetas - Bloqueo y Desbloqueo
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "6"
+                      enabled: true
+                  - intent:
+                      name: Tarjetas - Contratación y Cancelación
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "7"
+                      enabled: true
+                  - intent:
+                      name: Tarjetas - Otros
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "8"
+                      enabled: true
+                  - intent:
+                      name: Préstamos e hipotecas - Amortización anticipada
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "9"
+                      enabled: true
+                  - intent:
+                      name: Préstamos e hipotecas - Contratación
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "10"
+                      enabled: true
+                  - intent:
+                      name: Préstamos e hipotecas - Otros
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "11"
+                      enabled: true
+                  - intent:
+                      name: Seguros - Siniestros
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "12"
+                      enabled: true
+                  - intent:
+                      name: Seguros - Contratación Cancelación
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "13"
+                      enabled: true
+                  - intent:
+                      name: Seguros - Otros
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "14"
+                      enabled: true
+                  - intent:
+                      name: Otros - Reclamos
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "15"
+                      enabled: true
+                  - intent:
+                      name: Otros - Claves
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "16"
+                      enabled: true
+                  - intent:
+                      name: Otros - Consultas de oficina
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "17"
+                      enabled: true
+                  - intent:
+                      name: Otros - Datos personales
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "18"
+                      enabled: true
+                  - intent:
+                      name: Otros - Información de ahorros e inversión
+                      actions:
+                        - updateData:
+                            name: Set Intent
+                            statements:
+                              - string:
+                                  variable: Flow.bot_intent
+                                  value:
+                                    lit: "19"
+                      enabled: true
+                noIntent:
+                  actions:
+                    - updateData:
+                        name: No Intent
+                        statements:
+                          - string:
+                              variable: Flow.bot_intent
+                              value:
+                                exp: "\"\""
+                          - string:
+                              variable: Flow.intent_category
+                              value:
+                                exp: "\"\""
+                          - string:
+                              variable: Flow.exit_code
+                              value:
+                                lit: "404"
+                          - string:
+                              variable: Flow.exit_description
+                              value:
+                                lit: No intent detected
+                    - exitBotFlow:
+                        name: Exit Bot Flow
+          - updateData:
+              name: Update Status Data
+              statements:
+                - string:
+                    variable: Flow.exit_code
+                    value:
+                      lit: "200"
+                - string:
+                    variable: Flow.exit_description
+                    value:
+                      lit: ""
+          - switch:
+              name: Intent Categories
+              evaluate:
+                firstTrue:
+                  cases:
+                    - case:
+                        value:
+                          exp: If(Flow.bot_intent == "15", true, false)
+                        actions:
+                          - updateData:
+                              name: CLAIMS
+                              statements:
+                                - string:
+                                    variable: Flow.intent_category
+                                    value:
+                                      lit: Claims
+                          - setFlowOutcome:
+                              name: Set Flow Outcome
+                              flowOutcomeValue: SUCCESS
+                              flowOutcome:
+                                name: Intent_Claims
+                    - case:
+                        value:
+                          exp: If((Flow.bot_intent == "3") or (Flow.bot_intent == "5") or (Flow.bot_intent == "6") or (Flow.bot_intent == "8") or (Flow.bot_intent == "11") or (Flow.bot_intent == "17") or (Flow.bot_intent == "18") or (Flow.bot_intent == "19"), true, false)
+                        actions:
+                          - updateData:
+                              name: LOW SERVICING
+                              statements:
+                                - string:
+                                    variable: Flow.intent_category
+                                    value:
+                                      lit: LowServicing
+                          - setFlowOutcome:
+                              name: Set Flow Outcome
+                              flowOutcomeValue: SUCCESS
+                              flowOutcome:
+                                name: Intent_LowServicing
+                    - case:
+                        value:
+                          exp: If((Flow.bot_intent == "12") or (Flow.bot_intent == "13") or (Flow.bot_intent == "14") or (Flow.bot_intent == "16"), true, false)
+                        actions:
+                          - updateData:
+                              name: NO COMMERCIAL YIELD SERVICING
+                              statements:
+                                - string:
+                                    variable: Flow.intent_category
+                                    value:
+                                      lit: NoCommercialYieldServicing
+                          - setFlowOutcome:
+                              name: Set Flow Outcome
+                              flowOutcomeValue: SUCCESS
+                              flowOutcome:
+                                name: Intent_NoCommercialYieldServicing
+                    - case:
+                        value:
+                          exp: "false"
+                        actions:
+                          - updateData:
+                              name: COMMERCIAL YIELD SERVICING
+                              statements:
+                                - string:
+                                    variable: Flow.intent_category
+                                    value:
+                                      lit: CommercialYieldServicing
+                          - setFlowOutcome:
+                              name: Set Flow Outcome
+                              flowOutcomeValue: SUCCESS
+                              flowOutcome:
+                                name: Intent_CommercialYieldServicing
+                    - case:
+                        value:
+                          exp: If((Flow.bot_intent == "1") or (Flow.bot_intent == "2") or (Flow.bot_intent == "4") or (Flow.bot_intent == "7") or (Flow.bot_intent == "9") or (Flow.bot_intent == "10"), true, false)
+                        actions:
+                          - updateData:
+                              name: SIMPLE SALES
+                              statements:
+                                - string:
+                                    variable: Flow.intent_category
+                                    value:
+                                      lit: SimpleSales
+                          - setFlowOutcome:
+                              name: Set Flow Outcome
+                              flowOutcomeValue: SUCCESS
+                              flowOutcome:
+                                name: Intent_SimpleSales
+                    - case:
+                        value:
+                          exp: "false"
+                        actions:
+                          - updateData:
+                              name: COMPLEX SALES
+                              statements:
+                                - string:
+                                    variable: Flow.intent_category
+                                    value:
+                                      lit: ComplexSales
+                          - setFlowOutcome:
+                              name: Set Flow Outcome
+                              flowOutcomeValue: SUCCESS
+                              flowOutcome:
+                                name: Intent_ComplexSales
+          - exitBotFlow:
+              name: Exit Bot Flow
+  settingsNaturalLanguageUnderstanding:
+    nluDomainVersion:
+      intents:
+        - utterances:
+            - segments:
+                - text: Cerrar una cuenta
+            - segments:
+                - text: Nueva cuenta
+            - segments:
+                - text: Cancelar una cuenta
+            - segments:
+                - text: Contratar una cuenta
+            - segments:
+                - text: Eliminar una cuenta
+            - segments:
+                - text: Dar de baja una cuenta
+            - segments:
+                - text: Abrir una cuenta de ahorro
+            - segments:
+                - text: Abrir una cuenta
+            - segments:
+                - text: Borrar una cuenta existente
+            - segments:
+                - text: Crear una nueva cuenta
+          entityNameReferences: []
+          name: Cuentas - Contratación Cancelación
+        - utterances:
+            - segments:
+                - text: Gestionar mi cuenta
+            - segments:
+                - text: Información sobre cuentas
+            - segments:
+                - text: Consultar mis cuentas
+            - segments:
+                - text: Cuentas
+            - segments:
+                - text: Ver mis cuentas
+            - segments:
+                - text: Otras consultas sobre cuentas
+            - segments:
+                - text: Información sobre mi cuenta de ahorro
+          entityNameReferences: []
+          name: Cuentas - Otros
+        - utterances:
+            - segments:
+                - text: Ver facturas
+            - segments:
+                - text: Cambiar una domiciliación
+            - segments:
+                - text: Domiciliar un cargo
+            - segments:
+                - text: Domiciliaciones
+            - segments:
+                - text: Facturas
+            - segments:
+                - text: Ultimas facturas
+            - segments:
+                - text: Consultar domiciliaciones
+            - segments:
+                - text: Ver domiciliaciones
+            - segments:
+                - text: Quiero ver mis últimas domiciliaciones
+            - segments:
+                - text: Quiero comprobar una factura
+            - segments:
+                - text: Quiero consultar mis últimas facturas
+            - segments:
+                - text: Quiero revisar mis facturas
+          entityNameReferences: []
+          name: Cuentas - Pago de Facturas y Domiciliaciones
+        - utterances:
+            - segments:
+                - text: Ver mis gastos
+            - segments:
+                - text: Saldo en la cuenta
+            - segments:
+                - text: Dinero en la cuenta
+            - segments:
+                - text: Cuanto dinero tengo en la cuenta
+            - segments:
+                - text: Consultar mi último ingreso
+            - segments:
+                - text: Ver mis ingresos
+            - segments:
+                - text: Consultar mis gastos
+            - segments:
+                - text: Ver mis últimos gastos
+            - segments:
+                - text: Ingresos y gastos
+            - segments:
+                - text: Consultar transacciones
+            - segments:
+                - text: Consultar últimos movimientos
+            - segments:
+                - text: Consultar saldo
+          entityNameReferences: []
+          name: Cuentas - Saldos y movimientos
+        - utterances:
+            - segments:
+                - text: Transferencia a una de mis cuentas
+            - segments:
+                - text: Hacer una transferencia peródica
+            - segments:
+                - text: Devolver una transferencia
+            - segments:
+                - text: Ver transferencias
+            - segments:
+                - text: Hacer una transferencia
+            - segments:
+                - text: Transferencias periódicas
+            - segments:
+                - text: Transferencia al extranjero
+            - segments:
+                - text: Transferencia local
+            - segments:
+                - text: Cancelar una transferencia
+            - segments:
+                - text: Quiero enviar una transferencia
+            - segments:
+                - text: Quisiera realizar una transferencia
+            - segments:
+                - text: Me gustaría hacer una transferencia
+            - segments:
+                - text: Transferencias
+          entityNameReferences: []
+          name: Cuentas - Transferencias
+        - utterances:
+            - segments:
+                - text: Cambiar mi contraseña
+            - segments:
+                - text: Cambiar mi código PIN
+            - segments:
+                - text: Cambiar mi clave
+            - segments:
+                - text: Claves de registro
+            - segments:
+                - text: Claves de usuario
+            - segments:
+                - text: Consultar mis claves de usuario
+            - segments:
+                - text: He olvidado mi contraseña
+            - segments:
+                - text: Quiero cambiar mi usuario
+            - segments:
+                - text: Quiero cambiar mi contraseña
+            - segments:
+                - text: He olvidado mis claves
+            - segments:
+                - text: He olvidado mis claves de seguridad
+            - segments:
+                - text: He olvidado mis claves de acceso
+          entityNameReferences: []
+          name: Otros - Claves
+        - utterances:
+            - segments:
+                - text: Cambiar de oficina
+            - segments:
+                - text: Cambiar de sucursal
+            - segments:
+                - text: Pedir cita presencial
+            - segments:
+                - text: Cita en oficina
+            - segments:
+                - text: Pedir cita en oficina
+            - segments:
+                - text: Quiero sacar efectivo en oficina
+            - segments:
+                - text: Quiero pedir una cita
+          entityNameReferences: []
+          name: Otros - Consultas de oficina
+        - utterances:
+            - segments:
+                - text: Modificar teléfono de contacto
+            - segments:
+                - text: Cambiar domicilio
+            - segments:
+                - text: Cambiar dirección postal
+            - segments:
+                - text: Cambiar número de teléfono
+            - segments:
+                - text: Cambiar datos de contacto
+            - segments:
+                - text: Información personal
+            - segments:
+                - text: Cambiar información personal
+            - segments:
+                - text: Cambiar datos personales
+            - segments:
+                - text: Cambiar datos de contacto
+            - segments:
+                - text: Ver mis datos de contcato
+            - segments:
+                - text: Datos personales
+            - segments:
+                - text: Quiero cambiar mi información de contacto
+            - segments:
+                - text: Quiero modificar mis datos personales
+          entityNameReferences: []
+          name: Otros - Datos personales
+        - utterances:
+            - segments:
+                - text: Contratar plan de jubilación
+            - segments:
+                - text: Contratar plan de pensiones
+            - segments:
+                - text: Contratar un plan de ahorro
+            - segments:
+                - text: Productos de ahorro
+            - segments:
+                - text: Contratar una cartera
+            - segments:
+                - text: Contratar un fondo de inversión
+            - segments:
+                - text: Productos financieros
+            - segments:
+                - text: Asesoramiento sobre inversión
+            - segments:
+                - text: Productos de inversión
+            - segments:
+                - text: Invertir en bolsa
+            - segments:
+                - text: Quiero consultar información sobre ahorros
+            - segments:
+                - text: Quiero recibir información sobre inversiones
+          entityNameReferences: []
+          name: Otros - Información de ahorros e inversión
+        - utterances:
+            - segments:
+                - text: Abrir una incidencia
+            - segments:
+                - text: Notificar una incidencia
+            - segments:
+                - text: Estoy descontento
+            - segments:
+                - text: Hacer una sugerencia
+            - segments:
+                - text: Quiero hacer un reclamo
+            - segments:
+                - text: Quiero poner una queja
+            - segments:
+                - text: Poner una queja
+            - segments:
+                - text: Poner una reclamación
+            - segments:
+                - text: Me gustaría poner una reclamación
+            - segments:
+                - text: Quiero hacer una reclamación
+          entityNameReferences: []
+          name: Otros - Reclamos
+        - utterances:
+            - segments:
+                - text: Amortización de mi hipoteca
+            - segments:
+                - text: Amortización parcial de hipoteca
+            - segments:
+                - text: Amortización completa de hipoteca
+            - segments:
+                - text: Cancelar un préstamo
+            - segments:
+                - text: Quiero devolver un préstamos
+            - segments:
+                - text: Quiero cancelar una hipoteca
+            - segments:
+                - text: Amortización total
+            - segments:
+                - text: Amortización parcial
+            - segments:
+                - text: Quiero hacer una amortización anticipada
+          entityNameReferences: []
+          name: Préstamos e hipotecas - Amortización anticipada
+        - utterances:
+            - segments:
+                - text: Contratar una hipoteca
+            - segments:
+                - text: Quiero modificar mi hipoteca
+            - segments:
+                - text: Quiero cambiar de hipoteca
+            - segments:
+                - text: Quiero pedir una hipoteca
+            - segments:
+                - text: Solicitar un préstamos
+            - segments:
+                - text: Pedir un préstamo
+            - segments:
+                - text: Me gustaría pedir un préstamo
+            - segments:
+                - text: Me gustaría contratar una hipoteca
+          entityNameReferences: []
+          name: Préstamos e hipotecas - Contratación
+        - utterances:
+            - segments:
+                - text: Información sobre hipotecas
+            - segments:
+                - text: Pedir presupuesto para una hipoteca
+            - segments:
+                - text: Información sobre préstamos
+            - segments:
+                - text: Realizar una consulta sobre hipotecas
+            - segments:
+                - text: Realizar una consulta sobre préstamos
+            - segments:
+                - text: Préstamos e hipotecas
+            - segments:
+                - text: Hipotecas
+            - segments:
+                - text: Préstamos
+          entityNameReferences: []
+          name: Préstamos e hipotecas - Otros
+        - utterances:
+            - segments:
+                - text: Dar de baja un seguro
+            - segments:
+                - text: Me quiero dar de baja de mi seguro
+            - segments:
+                - text: Cancelar mi seguro
+            - segments:
+                - text: Quiero un seguro de vida
+            - segments:
+                - text: Quiero un seguro
+            - segments:
+                - text: Parte del seguro
+            - segments:
+                - text: Pago del seguro
+            - segments:
+                - text: Solicitar un seguro de la casa
+            - segments:
+                - text: Solicitar un seguro de vida
+            - segments:
+                - text: Contratar un seguro
+          entityNameReferences: []
+          name: Seguros - Contratación Cancelación
+        - utterances:
+            - segments:
+                - text: Hacer una sugerencia de mi seguro
+            - segments:
+                - text: Poner una queja de mi seguro
+            - segments:
+                - text: Reclamar seguro
+            - segments:
+                - text: Me gustaría poner una reclamación sobre mi seguro
+            - segments:
+                - text: Seguros
+            - segments:
+                - text: Sobre seguros
+            - segments:
+                - text: Información sobre seguros
+            - segments:
+                - text: Consulta sobre seguros
+          entityNameReferences: []
+          name: Seguros - Otros
+        - utterances:
+            - segments:
+                - text: He tenido un accidente
+            - segments:
+                - text: He tenido un siniestro
+            - segments:
+                - text: Cubrir un accidente
+            - segments:
+                - text: Seguro cubre el siniestro
+            - segments:
+                - text: Seguro de accidente
+            - segments:
+                - text: Pago del Siniestro
+            - segments:
+                - text: Siniestro total
+            - segments:
+                - text: Pagar por un siniestro
+            - segments:
+                - text: Me gustaría declarar un siniestro
+          entityNameReferences: []
+          name: Seguros - Siniestros
+        - utterances:
+            - segments:
+                - text: Error con pago de tarjeta
+            - segments:
+                - text: Error en la tarjeta
+            - segments:
+                - text: Desbloquear mi tarjeta
+            - segments:
+                - text: Bloquear mi tarjeta
+            - segments:
+                - text: No funciona mi tarjeta
+            - segments:
+                - text: Desbloqueo de tarjetas
+            - segments:
+                - text: Bloqueo de tarjetas
+            - segments:
+                - text: Quiero desbloquear una tarjeta
+            - segments:
+                - text: Quiero bloquear una tarjeta
+          entityNameReferences: []
+          name: Tarjetas - Bloqueo y Desbloqueo
+        - utterances:
+            - segments:
+                - text: Pedir tarjeta de débito
+            - segments:
+                - text: Pedir tarjeta de crédito
+            - segments:
+                - text: Pedir cambio de tarjeta
+            - segments:
+                - text: Pedir una nueva tarjeta
+            - segments:
+                - text: Necesito una tarjeta nueva
+            - segments:
+                - text: Quiero cambiar de tarjeta
+            - segments:
+                - text: Quiero dar de baja una tarjeta
+            - segments:
+                - text: Quiero una nueva tarjeta
+            - segments:
+                - text: Quiero contratar una nueva tarjeta
+          entityNameReferences: []
+          name: Tarjetas - Contratación y Cancelación
+        - utterances:
+            - segments:
+                - text: Quiero consultar los movimientos de mi tarjeta
+            - segments:
+                - text: Quiero ver los pagos de mi tarjeta
+            - segments:
+                - text: Cancelar pago con tarjeta
+            - segments:
+                - text: Pagar con mi tarjeta
+            - segments:
+                - text: Quiero hacer un pago con mi tarjeta
+            - segments:
+                - text: Pago con tarjeta
+            - segments:
+                - text: Sobre mis tarjetas
+            - segments:
+                - text: Tarjetas
+            - segments:
+                - text: Información sobre mi tarjeta
+            - segments:
+                - text: Consulta sobre tarjetas
+          entityNameReferences: []
+          name: Tarjetas - Otros
+      entities: []
+      entityTypes: []
+      language: es-us

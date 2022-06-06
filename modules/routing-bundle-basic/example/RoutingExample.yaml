@@ -1,0 +1,294 @@
+inboundCall:
+  name: "{{example_flow_name}}"
+  description: End2End Routing Example
+  division: "{{division}}"
+  startUpRef: "/inboundCall/tasks/task[New Task 1_10]"
+  defaultLanguage: "{{default_language}}"
+  supportedLanguages:
+    es-us:
+      defaultLanguageSkill:
+        noValue: true
+      textToSpeech:
+        Google TTS:
+          voice: es-US-Wavenet-A
+  initialGreeting:
+    exp: Append(ToAudioBlank(250), ToAudioTTS("Hola, bienvenido al primer módulo de enrutamiento"), ToAudioBlank(1000))
+  variables:
+    - booleanVariable:
+        name: Flow.digital_client
+        initialValue:
+          noValue: true
+    - booleanVariable:
+        name: Flow.digital_solution
+        initialValue:
+          noValue: true
+    - booleanVariable:
+        name: Flow.exceed_age
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.intent_category
+        initialValue:
+          noValue: true
+    - booleanVariable:
+        name: Flow.ivr_available
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.routing_channel
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.segment_type
+        initialValue:
+          noValue: true
+    - booleanVariable:
+        name: Flow.worthwhile_offer
+        initialValue:
+          noValue: true
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        noValue: true
+    callBridge:
+      processingPrompt:
+        noValue: true
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsErrorHandling:
+    errorHandling:
+      disconnect:
+        none: true
+    preHandlingAudio:
+      tts: Se produjo un error. Intente llamar de nuevo.
+  settingsMenu:
+    extensionDialingMaxDelay:
+      lit:
+        seconds: 1
+    listenForExtensionDialing:
+      lit: true
+    menuSelectionTimeout:
+      lit:
+        seconds: 10
+    repeatCount:
+      lit: 3
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  settingsSpeechRec:
+    completeMatchTimeout:
+      lit:
+        ms: 100
+    incompleteMatchTimeout:
+      lit:
+        ms: 1500
+    maxSpeechLengthTimeout:
+      lit:
+        seconds: 20
+    minConfidenceLevel:
+      lit: 50
+    asrCompanyDir: none
+    asrEnabledOnFlow: true
+  tasks:
+    - task:
+        name: New Task 1
+        refId: New Task 1_10
+        actions:
+          - updateData:
+              name: Set Call Information
+              statements:
+                - string:
+                    variable: Flow.intent_category
+                    value:
+                      lit: CommercialYieldServicing
+                - string:
+                    variable: Flow.segment_type
+                    value:
+                      lit: Mass
+                - boolean:
+                    variable: Flow.exceed_age
+                    value:
+                      lit: true
+                - boolean:
+                    variable: Flow.digital_solution
+                    value:
+                      lit: false
+                - boolean:
+                    variable: Flow.digital_client
+                    value:
+                      lit: false
+                - boolean:
+                    variable: Flow.worthwhile_offer
+                    value:
+                      lit: false
+                - boolean:
+                    variable: Flow.ivr_available
+                    value:
+                      lit: false
+          - callCommonModule:
+              name: ROUTING
+              commonModule:
+                "{{routing_module_name}}":
+                  ver_latestPublished:
+                    inputs:
+                      Common.digital_client:
+                        exp: Flow.digital_client
+                      Common.digital_solution:
+                        exp: Flow.digital_solution
+                      Common.exceed_age:
+                        exp: Flow.exceed_age
+                      Common.intent_category:
+                        exp: Flow.intent_category
+                      Common.ivr_available:
+                        exp: Flow.ivr_available
+                      Common.segment_type:
+                        exp: Flow.segment_type
+                      Common.worthwhile_offer:
+                        exp: Flow.worthwhile_offer
+                    outputs:
+                      Common.routing_channel:
+                        var: Flow.routing_channel
+          - switch:
+              name: First attention channel?
+              evaluate:
+                firstTrue:
+                  cases:
+                    - case:
+                        value:
+                          exp: If(Flow.routing_channel == "OneToOne", true, false)
+                        actions:
+                          - callCommonModule:
+                              name: ONETOONE Common Module
+                              commonModule:
+                                "{{one2one_module_name}}":
+                                  ver_latestPublished:
+                                    inputs:
+                                      Common.intent_category:
+                                        exp: Flow.intent_category
+                                    outputs:
+                                      Common.routing_channel:
+                                        var: Flow.routing_channel
+                          - switch:
+                              name: If no agents...
+                              evaluate:
+                                firstTrue:
+                                  default:
+                                    actions:
+                                      - playAudio:
+                                          name: CONTACTCENTER Audio
+                                          audio:
+                                            tts: A continuación, le enrutaremos con el módulo de contact center
+                                  cases:
+                                    - case:
+                                        value:
+                                          exp: If(Left(Flow.routing_channel, 8) == "Callback", true, false)
+                                        actions:
+                                          - playAudio:
+                                              name: CALLBACK Audio
+                                              audio:
+                                                tts: A continuación, le enrutaremos con el módulo de callback
+                    - case:
+                        value:
+                          exp: If(Flow.routing_channel == "PoolAttention", true, false)
+                        actions:
+                          - callCommonModule:
+                              name: POOLATTENTION Common Module
+                              commonModule:
+                                "{{poolattention_module_name}}":
+                                  ver_latestPublished:
+                                    inputs:
+                                      Common.intent_category:
+                                        noValue: true
+                                    outputs:
+                                      Common.routing_channel:
+                                        noValue: true
+                          - switch:
+                              name: If no agents...
+                              evaluate:
+                                firstTrue:
+                                  default:
+                                    actions:
+                                      - playAudio:
+                                          name: CONTACTCENTER Audio
+                                          audio:
+                                            tts: A continuación, le enrutaremos con el módulo de contact center
+                                  cases:
+                                    - case:
+                                        value:
+                                          exp: If(Left(Flow.routing_channel, 8) == "Callback", true, false)
+                                        actions:
+                                          - playAudio:
+                                              name: CALLBACK Audio
+                                              audio:
+                                                tts: A continuación, le enrutaremos con el módulo de callback
+                    - case:
+                        value:
+                          exp: If(Flow.routing_channel == "PoolSpecialist", true, false)
+                        actions:
+                          - playAudio:
+                              name: JOURNEYSTRICKER Audio
+                              audio:
+                                tts: A continuación, le enrutaremos con el módulo de journey stricker
+                    - case:
+                        value:
+                          exp: If(Flow.routing_channel == "ContactCenter", true, false)
+                        actions:
+                          - playAudio:
+                              name: CONTACTCENTER Audio
+                              audio:
+                                tts: A continuación, le enrutaremos con el módulo de contact center
+                    - case:
+                        value:
+                          exp: If(Left(Flow.routing_channel, 8) == "Callback", true, false)
+                        actions:
+                          - playAudio:
+                              name: CALLBACK Audio
+                              audio:
+                                tts: A continuación, le enrutaremos con el módulo de callback
+                    - case:
+                        value:
+                          exp: If(Flow.routing_channel == "DeepLink", true, false)
+                        actions:
+                          - playAudio:
+                              name: DEEPLINK Audio
+                              audio:
+                                tts: A continuación, le enrutaremos con el módulo de dip links
+                    - case:
+                        value:
+                          exp: If(Flow.routing_channel == "IVR", true, false)
+                        actions:
+                          - playAudio:
+                              name: IVR Audio
+                              audio:
+                                tts: A continuación, le enrutaremos con nuestro Servicio de I, UVE, ERRE
+          - disconnect:
+              name: Disconnect

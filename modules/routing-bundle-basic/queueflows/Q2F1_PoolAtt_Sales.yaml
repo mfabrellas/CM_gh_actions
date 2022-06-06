@@ -1,0 +1,121 @@
+inqueueCall:
+  name: "{{queue_flow_name}}"
+  description: Queue flow for Routing Common Modules
+  division: "{{division}}"
+  defaultLanguage: "{{default_language}}"
+  supportedLanguages:
+    es-us:
+      defaultLanguageSkill:
+        noValue: true
+      textToSpeech:
+        Google TTS:
+          voice: es-US-Wavenet-A
+  settingsInQueueCall:
+    holdMusic:
+      lit:
+        name: PromptSystem.on_hold_music
+  settingsActionDefaults:
+    playAudioOnSilence:
+      timeout:
+        lit:
+          seconds: 40
+    detectSilence:
+      timeout:
+        lit:
+          seconds: 40
+    callData:
+      processingPrompt:
+        noValue: true
+    callBridge:
+      processingPrompt:
+        noValue: true
+    collectInput:
+      noEntryTimeout:
+        lit:
+          seconds: 5
+    dialByExtension:
+      interDigitTimeout:
+        lit:
+          seconds: 6
+    transferToUser:
+      connectTimeout:
+        noValue: true
+    transferToNumber:
+      connectTimeout:
+        noValue: true
+    transferToGroup:
+      connectTimeout:
+        noValue: true
+    transferToFlowSecure:
+      connectTimeout:
+        lit:
+          seconds: 15
+  settingsErrorHandling:
+    errorHandling:
+      disconnect:
+        none: true
+    preHandlingAudio:
+      tts: Se produjo un error. Intente llamar de nuevo.
+  settingsPrompts:
+    ensureAudioInPrompts: false
+    promptMediaToValidate:
+      - mediaType: audio
+      - mediaType: tts
+  startUpTaskActions:
+    - loop:
+        name: Loop
+        currentIndex:
+          var: Task.loop_max_count
+        loopCount:
+          lit: 4
+        outputs:
+          loop:
+            actions:
+              - playAudio:
+                  name: Play Audio
+                  audio:
+                    tts: En estos momentos todos nuestros agentes están ocupados.
+              - collectInput:
+                  name: Callback or Wait on queue?
+                  inputData:
+                    var: Task.option_selected
+                  digits:
+                    range:
+                      min: 1
+                      max: 20
+                  interDigitTimeout:
+                    noValue: true
+                  noEntryTimeout:
+                    noValue: true
+                  inputAudio:
+                    tts: Si quieres que te devolvamos la llamada lo antes posible, pulsa 1, si prefieres mantenerte a la espera, pulsa 2.
+                  acceptJustStar:
+                    lit: false
+                  acceptJustPound:
+                    lit: false
+                  verificationType: none
+                  outputs:
+                    success:
+                      actions:
+                        - playAudio:
+                            name: CALLBACK Audio
+                            audio:
+                              tts: A continuación, le enrutaremos con el módulo de callback
+                        - disconnect:
+                            name: CALLBACK
+              - holdMusic:
+                  name: Wait for PoolAttention
+                  prompt:
+                    exp: Flow.HoldPrompt
+                  bargeInEnabled:
+                    lit: false
+                  playStyle:
+                    duration:
+                      lit:
+                        seconds: 20
+    - playAudio:
+        name: Play Audio
+        audio:
+          tts: En estos momentos todos nuestros agentes están ocupados. Vuelve a llamar en otro momento.
+    - disconnect:
+        name: Disconnect
